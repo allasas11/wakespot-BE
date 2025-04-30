@@ -8,12 +8,10 @@ require('./db')
 app.use(express.json())
 app.use(cors())
 
-// ROUTES //
+const userApiRoutes = require('./api/users')
 
 
-
-// ROUTES // 
-
+app.use('/api/users', userApiRoutes)
 
 const PORT = process.env.PORT || 3010
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
