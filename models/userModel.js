@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: function(value) {
-                return /^^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
             },
             message: ({ value }) => {
                 return `${value} is not a valid email`
@@ -33,9 +33,10 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: Object.values(ROLES),
-        default: ROLES.USER,
+        default: ROLES.CUSTOMER,
     }
-})
+}, 
+{ timestamps: true })
 
 const User = mongoose.model('User', userSchema)
 
