@@ -110,8 +110,32 @@ const updateUser = async (req, res) => {
         res.status(500).send(error)
     }
 }
+
+const getProfile = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        return res.send({
+            message: 'User profile',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        res.status(500).send({ message: 'Error fetching profile', error: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
-    updateUser
+    updateUser,
+    getProfile
 }
