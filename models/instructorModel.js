@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const SPECIALTIES = require('../config/specialties')
+
 const { Schema } = mongoose;
 
 const InstructorSchema = new Schema({

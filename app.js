@@ -26,5 +26,5 @@ const authMiddleWare = require('./middlewares/authMiddleware')
 const rolesMiddleware = require('./middlewares/rolesMiddleware')
 const ROLES = require('./config/roles')
 
-const PORT = process.env.PORT || 3010
+const PORT = process.env.PORT || 3015
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
