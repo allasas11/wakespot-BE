@@ -7,6 +7,10 @@ const SessionSchema = new Schema({
     ref: 'Location',
     required: true
   },
+  instructor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Instructor'
+  },
   date: {
     type: Date,
     required: true,

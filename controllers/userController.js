@@ -4,6 +4,14 @@ const process = require('process')
 
 const User = require('../models/userModel')
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).send(users);
+    } catch (err) {
+        res.status(500).send({ message: 'Error fetching users', error: err.message });
+    }
+}   
 
 const register = async (req, res) => {
     const { username, email, password } = req.body
@@ -137,5 +145,6 @@ module.exports = {
     register,
     login,
     updateUser,
-    getProfile
+    getProfile,
+    getAllUsers
 }
