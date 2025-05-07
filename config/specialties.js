@@ -1,7 +1,7 @@
 const SPECIALTIES = {
-    BEGINNER: 'BEGINNER',
-    INTERMEDIATE: 'INTERMEDIATE',
-    ADVANCED: 'ADVANCED',
+    BEGINNER: 'Beginner',
+    INTERMEDIATE: 'Intermediate',
+    ADVANCED: 'Advanced',
 }
 
 module.exports = SPECIALTIES

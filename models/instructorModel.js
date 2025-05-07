@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const SPECIALTIES = require('../config/specialties')
+const CERTIFICATIONS = require('../config/certifications')
 
 const { Schema } = mongoose;
 
@@ -23,11 +24,11 @@ const InstructorSchema = new Schema({
     required: [true, 'Image URL is required'],
     trim: true,
     validate: {
-        validator: function (v) {
-          return /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\- ./]*)?\.(jpg|jpeg|png|gif)$/i.test(v);
-        },
-        message: props => `${props.value} is not a valid image URL`
-      }
+      validator: function (v) {
+        return /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\- .\/]*)?\.(jpe?g|png|gif)(\?\S*)?$/i.test(v);
+      },
+      message: props => `${props.value} is not a valid image URL`
+    }
   },
   specialty: {
     type: String,
@@ -47,7 +48,8 @@ const InstructorSchema = new Schema({
   },
   certifications: {
     type: [String],
-    trim: true
+    required: true,
+    enum: Object.values(CERTIFICATIONS),
   },
   isActive: {
     type: Boolean,
