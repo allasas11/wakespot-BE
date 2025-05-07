@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const CATEGORIES = require('../config/categories');
+
 const { Schema } = mongoose;
 
 const EquipmentPackageSchema = new Schema({
@@ -33,8 +35,8 @@ const EquipmentPackageSchema = new Schema({
   },
   category: {
     type: String,
-    enum: ['wakeboard', 'ski', 'paddle', 'other'],
-    default: 'other'
+    enum: Object.values(CATEGORIES),
+    default: CATEGORIES.OTHER
   },
   imageUrl: {
     type: String,
