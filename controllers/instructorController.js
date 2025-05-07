@@ -34,11 +34,11 @@ const getInstructorById = async (req, res) => {
 };
 
 const createInstructor = async (req, res) => {
-    const { name, bio, specialty, activeLocations } = req.body;
+    const { name, bio, imageUrl, specialty, yearsOfExperience, certifications, activeLocations } = req.body;
 
-    if (!name || !bio || !specialty || !activeLocations) {
+    if (!name || !bio || !specialty || !certifications || !activeLocations) {
         return res.status(400).send({
-            message: 'Name, bio, specialty, and activeLocations are required'
+            message: 'All fields are required'
         });
     }
 
@@ -48,6 +48,7 @@ const createInstructor = async (req, res) => {
 
         res.send(instructor);
     } catch (err) {
+        console.error('❌ Failed to create instructor:', err.message);
         res.status(500).send({ message: 'Error creating instructor', error: err.message });
     }
 };

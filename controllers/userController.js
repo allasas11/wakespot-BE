@@ -36,13 +36,16 @@ const register = async (req, res) => {
 
         await newUser.save()
 
+        console.log('New user saved:', newUser)
+
         return res.status(201).send({
             message: 'User registered successfully',
             user: { username, email },
         })
 
     } catch (error) {
-        res.status(500).send(error)
+        console.error('Register error:', error)
+        res.status(500).send({ message: 'Error registering user', error: error.message })
     }
 }
 
@@ -109,11 +112,7 @@ const updateUser = async (req, res) => {
             return res.status(404).send({message: 'User does not exist'})
         }
 
-        return res.send({
-            message: 'User successfully updated',
-            user: { username },
-        })
-        
+        res.send({message: 'User succesfully updated', user: { username }})
     } catch (error) {
         res.status(500).send(error)
     }
