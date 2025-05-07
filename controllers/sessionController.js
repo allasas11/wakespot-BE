@@ -38,12 +38,16 @@ const getSessionById = async (req, res) => {
 };
 
 const createSession = async (req, res) => {
-    const { location, date, time, durationMinutes, price } = req.body;
+    const { location, date, time, durationMinutes, price, instructor } = req.body;
 
     if (!location || !date || !time || !durationMinutes || !price) {
         return res.status(400).send({
-            message: 'All fields are required: location, date, time, durationMinutes, price'
+            message: 'Some fields are required:'
         });
+    }
+
+    if (instructor === "") {
+        delete instructor;
     }
 
     if (!mongoose.Types.ObjectId.isValid(location)) {
