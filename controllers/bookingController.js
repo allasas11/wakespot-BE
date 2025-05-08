@@ -7,7 +7,14 @@ const getBookings = async (req, res) => {
     try {
         const bookings = await Booking.find()
             .populate('user', 'username email')
-            .populate('session', 'date time durationMinutes price status')
+            .populate({
+            path: 'session',
+            select: 'date time durationMinutes price status location instructor',
+            populate: [
+                { path: 'location', select: 'name address' },
+                { path: 'instructor', select: 'name bio' }
+            ]
+            })
             .populate('equipmentPackages', 'name price itemsIncluded');
 
         res.send(bookings);
@@ -25,9 +32,16 @@ const getBookingById = async (req, res) => {
 
     try {
         const booking = await Booking.findById(id)
-            .populate('user', 'username email')
-            .populate('session', 'date time durationMinutes price status')
-            .populate('equipmentPackages', 'name price itemsIncluded');
+        .populate('user', 'username email')
+        .populate({
+          path: 'session',
+          select: 'date time durationMinutes price status location instructor',
+          populate: [
+            { path: 'location', select: 'name address' },
+            { path: 'instructor', select: 'name bio' }
+          ]
+        })
+        .populate('equipmentPackages', 'name price itemsIncluded');
 
         if (!booking) {
             return res.status(404).send({ message: 'Booking not found' });
@@ -82,7 +96,14 @@ const createBooking = async (req, res) => {
 
         const populatedBooking = await Booking.findById(newBooking._id)
             .populate('user', 'username email')
-            .populate('session', 'date time durationMinutes price status')
+            .populate({
+                path: 'session',
+                select: 'date time durationMinutes price status location instructor',
+                populate: [
+                    { path: 'location', select: 'name address' },
+                    { path: 'instructor', select: 'name bio' }
+                ]
+            })
             .populate('equipmentPackages', 'name price itemsIncluded');
 
         res.status(201).send(populatedBooking);
@@ -125,7 +146,14 @@ const updateBooking = async (req, res) => {
 
         const populatedBooking = await Booking.findById(updatedBooking._id)
             .populate('user', 'username email')
-            .populate('session', 'date time durationMinutes price status')
+            .populate({
+                path: 'session',
+                select: 'date time durationMinutes price status location instructor',
+                populate: [
+                    { path: 'location', select: 'name address' },
+                    { path: 'instructor', select: 'name bio' }
+            ]
+            })
             .populate('equipmentPackages', 'name price itemsIncluded');
 
         res.send(populatedBooking);
