@@ -1,5 +1,7 @@
-const mongoose = require('mongoose');
-const Session = require('../models/sessionModel');
+const mongoose = require('mongoose')
+const Session = require('../models/sessionModel')
+
+const Booking = require('../models/bookingModel')
 
 const getSessions = async (req, res) => {
     try {
@@ -71,7 +73,7 @@ const createSession = async (req, res) => {
 
 const updateSession = async (req, res) => {
     const { id } = req.params;
-    const { location, instructor } = req.body;
+    const { location, instructor, status: sessionStatus } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send({ message: 'Invalid session ID' });
@@ -95,6 +97,14 @@ const updateSession = async (req, res) => {
         if (!updatedSession) {
             return res.status(404).send({ message: 'Session not found' });
         }
+
+        if (sessionStatus === 'available') {
+            await Booking.updateMany(
+                { session: updatedSession._id, status: 'confirmed' },
+                { status: 'cancelled' }
+            );
+        }
+
 
         const populatedSession = await Session.findById(updatedSession._id)
             .populate('location', 'name address')
@@ -133,4 +143,4 @@ module.exports = {
     createSession,
     updateSession,
     removeSession
-};
+}

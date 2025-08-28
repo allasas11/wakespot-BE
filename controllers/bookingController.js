@@ -5,7 +5,13 @@ const EquipmentPackage = require('../models/equipmentPackageModel');
 
 const getBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find()
+        let query = {}
+
+        if (req.user.role === 'CUSTOMER') {
+            query = { user: req.user.id }
+        }   
+
+        const bookings = await Booking.find(query)
             .populate('user', 'username email')
             .populate({
             path: 'session',
@@ -114,34 +120,53 @@ const createBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
     const { id } = req.params;
-    const { equipmentPackages } = req.body;
+    const { equipmentPackages, status, cancellationReason } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send({ message: 'Invalid booking ID' });
     }
 
     try {
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            id,
-            req.body,
-            { new: true, runValidators: true }
-        );
+
+        const updatedBooking = await Booking.findById(id)
 
         if (!updatedBooking) {
             return res.status(404).send({ message: 'Booking not found' });
         }
 
-        let totalPrice = updatedBooking.session ? (await Session.findById(updatedBooking.session)).price : 0;
+        if (status) {
+            updatedBooking.status = status;
 
-        if (equipmentPackages && equipmentPackages.length > 0) {
-            const packages = await EquipmentPackage.find({
-                _id: { $in: equipmentPackages }
-            });
+            if (status === 'cancelled') {
+                updatedBooking.cancellationReason = cancellationReason || '';
+            } else {
+                updatedBooking.cancellationReason = undefined;
+            }
 
-            packages.forEach(pkg => totalPrice += pkg.price);
+            if (updatedBooking.session) {
+                if (status === 'cancelled') {
+                    await Session.findByIdAndUpdate(updatedBooking.session, { status: 'available' });
+                } else if (status === 'confirmed') {
+                    await Session.findByIdAndUpdate(updatedBooking.session, { status: 'booked' });
+                } else if (status === 'completed') {
+                    await Session.findByIdAndUpdate(updatedBooking.session, { status: 'completed' });
+                }
+            }
         }
 
-        updatedBooking.totalPrice = totalPrice;
+       if (equipmentPackages && equipmentPackages.length > 0) {
+            updatedBooking.equipmentPackages = equipmentPackages;
+
+            let totalPrice = updatedBooking.session
+                ? (await Session.findById(updatedBooking.session)).price
+                : 0;
+
+            const packages = await EquipmentPackage.find({ _id: { $in: equipmentPackages } });
+            packages.forEach(pkg => totalPrice += pkg.price);
+
+            updatedBooking.totalPrice = totalPrice;
+        }
+
         await updatedBooking.save();
 
         const populatedBooking = await Booking.findById(updatedBooking._id)

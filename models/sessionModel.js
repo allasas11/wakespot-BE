@@ -31,7 +31,7 @@ const SessionSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['available', 'booked'],
+    enum: ['available', 'booked', 'completed'],
     default: 'available'
   },
   createdBy: {
