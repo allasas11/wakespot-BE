@@ -47,6 +47,11 @@ const BookingSchema = new Schema({
     type: Date,
     default: Date.now
   },
+    cancellationReason: {
+    type: String,
+    trim: true,
+    maxlength: [250, 'Cancellation reason cannot exceed 250 characters']
+  },
 }, 
 { timestamps: true });
 
