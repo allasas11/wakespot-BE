@@ -26,5 +26,9 @@ const authMiddleWare = require('./middlewares/authMiddleware')
 const rolesMiddleware = require('./middlewares/rolesMiddleware')
 const ROLES = require('./config/roles')
 
+app.get('/', (req, res) => {
+    res.send('Wakespot API is running...');
+  });
+
 const PORT = process.env.PORT || 3015
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
